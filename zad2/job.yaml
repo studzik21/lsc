@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copy-job
+spec:
+  template:
+    spec:
+      volumes:
+      - name: task-pv-storage
+        persistentVolumeClaim:
+          claimName: task-pv-claim
+      containers:
+      - name: copy
+        image: send-html:v1
+        command: ["cp", "/app/index.html", "/mnt/index.html"] 
+        volumeMounts:
+        - mountPath: "/mnt"
+          name: task-pv-storage
+      restartPolicy: Never
+  backoffLimit: 4
